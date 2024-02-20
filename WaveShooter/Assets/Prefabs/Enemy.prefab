@@ -111,12 +111,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49de1a6a2fd77a34fa56bf494c8a7c9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  col: {fileID: 2060647209018465199}
   enemyParameters:
   - {fileID: 11400000, guid: 4aea83320cd0a1a47942eadbadd9d7cd, type: 2}
   meshRenderer: {fileID: 1190821035990514303}
   particlesOfDestruction: {fileID: 4370433133567060568}
   scaleAnimDuration: 0.4
-  scaleEase: 28
+  scaleEase: 22
   colors:
   - {r: 0.76170784, g: 0.7735849, b: 0.16785322, a: 1}
   - {r: 0.9547169, g: 0.25038794, b: 0.25038794, a: 1}

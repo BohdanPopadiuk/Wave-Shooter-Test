@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static Action RestartGame;
     public static Action GameOverAction;
     public static Action<int> WaveUpdated;
     public static Action<int, float> UpdateWaveProgress;//score && wave progress
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         EnemyController.DestroyEnemy += DestroyEnemy;
+        RestartGame += StartNewGame;
         
         _enemySlots = enemySlotsParent.GetComponentsInChildren<EnemySlot>();
         _enemyPool = new GameObjectPool(enemyPrefab.gameObject, 10);
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         EnemyController.DestroyEnemy -= DestroyEnemy;
+        RestartGame -= StartNewGame;
     }
 
     private void StartNewGame()
