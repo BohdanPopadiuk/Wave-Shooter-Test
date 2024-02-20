@@ -82,7 +82,7 @@ public class UiManager : MonoBehaviour
     private void HidePanel(CanvasGroup panel)
     {
         panel.interactable = false;
-        panel.DOFade(1, showPanelAnimDuration)
+        panel.DOFade(0, showPanelAnimDuration)
             .OnComplete(() =>
             {
                 panel.blocksRaycasts = false;

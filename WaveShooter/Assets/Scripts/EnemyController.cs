@@ -27,21 +27,23 @@ public class EnemyController : MonoBehaviour, IClickable
 
     private void Awake()
     {
+        NewEnemyParameters += UpdateEnemyParameters;
         _particleModule = particlesOfDestruction.GetComponent<ParticleSystem>().main;
     }
 
     private void OnEnable()
     {
-        NewEnemyParameters += UpdateEnemyParameters;
-        
         CreateNewEnemy();
     }
 
     private void OnDisable()
     {
-        NewEnemyParameters -= UpdateEnemyParameters;
-        
         if(_scaleTween != null) _scaleTween.Kill();
+    }
+
+    private void OnDestroy()
+    {
+        NewEnemyParameters -= UpdateEnemyParameters;
     }
 
     private void UpdateEnemyParameters(EnemyParameters[] enemyParameters)

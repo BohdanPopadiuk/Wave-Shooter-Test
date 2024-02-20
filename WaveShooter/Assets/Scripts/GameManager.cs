@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static Action RestartGame;
     public static Action GameOverAction;
-    public static Action<int> WaveUpdated;
     public static Action<int, float> UpdateWaveProgress;//score && wave progress
     
     [SerializeField] private WavesParameters wavesParameters;
@@ -18,15 +17,17 @@ public class GameManager : MonoBehaviour
 
     private List<GameObject> _activeEnemies = new List<GameObject>();
     private EnemySlot[] _enemySlots;
+    private bool _spawnerBlocked;
     private int _currentWave;
     private int _currentWaveScore;
     private float _timer;
+    private int _scoreDelta;
     
     public int Score { get; private set; }
     private int Threshold => wavesParameters.Waves[_currentWave].Threshold;
     private int LastWave => wavesParameters.Waves.Length - 1;
     private float SpawnTime => wavesParameters.Waves[_currentWave].SpawnTime;
-    private float WaveProgress => (float)_currentWaveScore / Threshold;//0-1
+    private float WaveProgress => (float)_currentWaveScore / _scoreDelta;//0-1
     private EnemyParameters[] GetEnemyParameters => wavesParameters.Waves[_currentWave].EnemiesParameters;
     
     private void Start()
@@ -53,7 +54,6 @@ public class GameManager : MonoBehaviour
 
     private void StartNewGame()
     {
-        
         Debug.Log("StartNewGame");
         while (_activeEnemies.Count > 0)
         {
@@ -71,9 +71,12 @@ public class GameManager : MonoBehaviour
         Score = 0;
         _currentWave = 0;
         _timer = SpawnTime;
+        _scoreDelta = Threshold;
+        
+        _spawnerBlocked = false;
 
-        SetCurrentWave();
         UpdateWaveProgress?.Invoke(Score, WaveProgress);
+        SetCurrentWave();
     }
 
     private void DestroyEnemy(EnemyController enemy)
@@ -88,9 +91,8 @@ public class GameManager : MonoBehaviour
 
         Score++;
         _currentWaveScore++;
-        
+
         UpdateWaveProgress?.Invoke(Score, WaveProgress);
-        
         if (Score >= Threshold)
         {
             NextWave();
@@ -99,8 +101,9 @@ public class GameManager : MonoBehaviour
 
     private void EnemySpawner()
     {
+        if(_spawnerBlocked) return;
+        
         _timer -= Time.deltaTime;
-        _timer = Mathf.Clamp(_timer, 0, SpawnTime);
         
         if (_timer <= 0)
         {
@@ -127,6 +130,7 @@ public class GameManager : MonoBehaviour
     private void GameOver()
     {
         Debug.Log("GameOver");
+        _spawnerBlocked = true;
         GameOverAction?.Invoke();
     }
 
@@ -143,7 +147,7 @@ public class GameManager : MonoBehaviour
     private void SetCurrentWave()
     {
         _currentWaveScore = 0;
+        _scoreDelta = Threshold - Score;
         EnemyController.NewEnemyParameters?.Invoke(GetEnemyParameters);
-        WaveUpdated?.Invoke(_currentWave);
     }
 }
