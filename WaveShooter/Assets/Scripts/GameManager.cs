@@ -74,19 +74,24 @@ public class GameManager : MonoBehaviour
         _scoreDelta = Threshold;
         
         _spawnerBlocked = false;
-
-        UpdateWaveProgress?.Invoke(Score, WaveProgress);
+        
         SetCurrentWave();
+        UpdateWaveProgress?.Invoke(Score, WaveProgress);
     }
 
     private void DestroyEnemy(EnemyController enemy)
     {
         _activeEnemies.Remove(enemy.gameObject);
         _enemyPool.Return(enemy.gameObject);
+        
         foreach (EnemySlot slot in _enemySlots)
         {
             if (enemy.gameObject == slot.Enemy)
+            {
                 _enemySpawnQueue.Enqueue(slot);
+                slot.Clear();
+                break;
+            }
         }
 
         Score++;

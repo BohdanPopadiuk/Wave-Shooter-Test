@@ -15,4 +15,9 @@ public class EnemySlot : MonoBehaviour
         Enemy = enemy;
         Enemy.transform.position = transform.position;
     }
+
+    public void Clear()
+    {
+        Enemy = null;
+    }
 }
